@@ -12,7 +12,8 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('properties', function (Blueprint $table) {
-            $table->foreignId('user_id')->constrained()->onDelete('cascade'); 
+            $table->id();
+            $table->foreignId('user_id')->constrained()->onDelete('cascade');
             $table->string('name');
             $table->text('description')->nullable();
             $table->string('address');
@@ -23,6 +24,7 @@ return new class extends Migration
             $table->string('property_type');
             $table->integer('year_built')->nullable();
             $table->boolean('active')->default(true);
+            $table->timestamps();
         });
     }
 
