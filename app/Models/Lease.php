@@ -3,9 +3,11 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Lease extends Model
 {
+    use HasFactory;
     protected $fillable = [
         'unit_id',
         'tenant_id',
