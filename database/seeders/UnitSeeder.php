@@ -15,10 +15,9 @@ class UnitSeeder extends Seeder
         User::factory()->landlord()->count(10)->create()->each(function ($landlord) {
             Property::factory()->count(1)->create([
                 'user_id' => $landlord->id,
-            ])->each(function ($property) {d
+            ])->each(function ($property) {
                 Unit::factory()->count(rand(2, 5))->create([
                     'property_id' => $property->id,
-                    'status' => $this->randomStatus(['vacant', 'occupied', 'maintenance', 'reserved']),
                 ]);
             });
         });
@@ -42,7 +41,7 @@ class UnitSeeder extends Seeder
             'square_footage' => 1200.00,
             'rent_amount' => 2000.00,
             'features' => ['balcony', 'in-unit laundry', 'pet-friendly'],
-            'status' => 'vacant',
+            'status' => 'available',
         ]);
         Unit::factory()->create([
             'property_id' => $specificProperty->id,
@@ -66,10 +65,5 @@ class UnitSeeder extends Seeder
             'features' => ['balcony', 'pool', 'in-unit laundry'],
             'status' => 'maintenance',
         ]);
-    }
-
-    private function randomStatus(array $statuses): string
-    {
-        return $statuses[array_rand($statuses)];
     }
 }
