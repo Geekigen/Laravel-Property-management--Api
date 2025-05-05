@@ -11,14 +11,14 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/user', function (Request $request) {
     return $request->user();
-})->middleware('auth:sanctum');
-Route::post('/register', [AuthController::class, 'register']);
+})->middleware(['auth:sanctum','throttle:api']);
+Route::post('/register', [AuthController::class, 'register'])->middleware(['throttle:api']);
 Route::post('/login', [AuthController::class, 'store']);
-Route::middleware(['auth:sanctum'])->group(function () {
+Route::middleware(['auth:sanctum','throttle:api'])->group(function () {
     Route::post('/logout', [AuthController::class, 'destroy']);
     Route::post('/reset-password', [AuthController::class, 'resetPassword']);
 });
-Route::middleware(['auth:sanctum','role:admin,agent'])->group(function () {
+Route::middleware(['auth:sanctum','role:admin,agent','throttle:api'])->group(function () {
     // property management
     Route::apiResource('/property', PropertyController::class);
 });
@@ -27,7 +27,7 @@ Route::middleware(['auth:sanctum','role:admin,agent'])->group(function () {
     // property management
     Route::apiResource('/unit', UnitController::class);
 });
-Route::middleware(['auth:sanctum','role:admin,agent'])->group(function () {
+Route::middleware(['auth:sanctum','role:admin,agent,landlord'])->group(function () {
     // property management
     Route::apiResource('/tenant', TenantsController::class);
     Route::apiResource('/lease', LeasesController::class);

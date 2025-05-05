@@ -5,16 +5,19 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Models\Property;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 
 class PropertyController extends Controller
-
 {
     /**
      * Display a listing of the properties.
      */
     public function index()
     {
-        $properties = Property::paginate(10);
+        $properties = Cache::remember('properties_list', 60, function () {
+            return Property::paginate(10);
+        });
+
         return response()->json(['data' => $properties], 200);
     }
 
@@ -38,6 +41,10 @@ class PropertyController extends Controller
         ]);
 
         $property = Property::create($validatedData);
+
+
+        Cache::forget('properties_list');
+
         return response()->json(['data' => $property], 201);
     }
 
@@ -81,6 +88,8 @@ class PropertyController extends Controller
         ]);
 
         $property->update($validatedData);
+        Cache::forget('properties_list');
+
         return response()->json(['data' => $property], 200);
     }
 
@@ -96,6 +105,9 @@ class PropertyController extends Controller
         }
 
         $property->delete();
+
+        Cache::forget('properties_list');
+
         return response()->json(['message' => 'Property deleted successfully'], 200);
     }
 }

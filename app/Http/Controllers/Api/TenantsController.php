@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 use App\Models\Tenants;
 
 class TenantsController extends Controller
@@ -13,7 +14,10 @@ class TenantsController extends Controller
      */
     public function index()
     {
-        $tenants = Tenants::paginate(10);
+        $tenants = Cache::remember('tenants_list', 60, function () {
+            return Tenants::paginate(10);
+        });
+
         return response()->json($tenants, 200);
     }
 
@@ -31,6 +35,10 @@ class TenantsController extends Controller
         ]);
 
         $tenant = Tenants::create($validatedData);
+
+
+        Cache::forget('tenants_list');
+
         return response()->json($tenant, 201);
     }
 
@@ -68,6 +76,10 @@ class TenantsController extends Controller
         ]);
 
         $tenant->update($validatedData);
+
+
+        Cache::forget('tenants_list');
+
         return response()->json($tenant, 200);
     }
 
@@ -83,6 +95,10 @@ class TenantsController extends Controller
         }
 
         $tenant->delete();
+
+
+        Cache::forget('tenants_list');
+
         return response()->json(['message' => 'Tenant deleted successfully'], 200);
     }
 }
