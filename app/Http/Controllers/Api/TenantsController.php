@@ -15,8 +15,15 @@ class TenantsController extends Controller
     public function index()
     {
         $tenants = Cache::remember('tenants_list', 60, function () {
-            return Tenants::paginate(10);
+            return Tenants::select('id', 'name', 'email', 'status') // Select only necessary columns
+            ->orderBy('name') // Add ordering for consistent results
+            ->paginate(10); // Paginate results
         });
+        // $tenants = Cache::remember('tenants_list', 60, function () {
+        //     return Tenants::paginate(10);
+        // });
+        // $tenants =  Tenants::all();#without optimization
+
 
         return response()->json($tenants, 200);
     }

@@ -15,8 +15,15 @@ class PropertyController extends Controller
     public function index()
     {
         $properties = Cache::remember('properties_list', 60, function () {
-            return Property::paginate(10);
+            return Property::with('user')# Eager load related models
+            ->select(['id', 'name', 'address', 'city', 'state', 'country', 'property_type', 'active']) # Select only necessary columns
+            ->orderBy('created_at', 'desc') # Optimize query with ordering
+            ->paginate(10);
         });
+        // $properties = Cache::remember('properties_list', 60, function () {
+        //     return Property::paginate(10);
+        // });
+        // $properties = Property::all(); #without optimization
 
         return response()->json(['data' => $properties], 200);
     }

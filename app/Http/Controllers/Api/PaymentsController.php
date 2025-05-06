@@ -5,6 +5,8 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Models\Payments;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
+use App\Jobs\SendPaymentReceipt;
 
 class PaymentsController extends Controller
 {
@@ -13,7 +15,12 @@ class PaymentsController extends Controller
      */
     public function index()
     {
-        $payments = Payments::paginate(10);
+        $payments=Cache::remember('payments_list', 60, function () {
+            return Payments::with('lease') // Eager load related models
+                ->select(['id', 'lease_id', 'amount', 'due_date', 'payment_date', 'payment_method', 'transaction_id', 'status', 'notes'])
+                ->paginate(10);
+        });
+        // $payments = Payments::with('lease')->paginate(10);
         return response()->json($payments);
     }
 
@@ -34,6 +41,7 @@ class PaymentsController extends Controller
         ]);
 
         $payment = Payments::create($validatedData);
+        SendPaymentReceipt::dispatch($payment);
         return response()->json($payment, 201);
     }
 
