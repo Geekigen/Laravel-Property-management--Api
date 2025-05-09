@@ -22,7 +22,7 @@ class PaymentsFactory extends Factory
             'payment_date' => $paymentDate ? $paymentDate->format('Y-m-d') : null,
             'payment_method' => $this->faker->randomElement(['credit_card', 'bank_transfer', 'cash', 'check']),
             'transaction_id' => $this->faker->unique()->numerify('TXN-########'),
-            'status' => $paymentDate ? 'paid' : $this->faker->randomElement(['pending', 'overdue']),
+            'status' => $paymentDate ? 'paid' : $this->faker->randomElement(['due', 'late', 'partially_paid']),
             'notes' => $this->faker->optional()->sentence(),
         ];
     }

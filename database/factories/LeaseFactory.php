@@ -4,7 +4,7 @@ namespace Database\Factories;
 
 use App\Models\Lease;
 use App\Models\Unit;
-use App\Models\Tenants;
+use App\Models\Tenants; // Correct the namespace for Tenant
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 class LeaseFactory extends Factory
@@ -17,8 +17,8 @@ class LeaseFactory extends Factory
         $endDate = $this->faker->dateTimeBetween($startDate, '+1 year');
 
         return [
-            'unit_id' => null, // Seeder provides this
-            'tenant_id' => null, // Seeder provides this
+            'unit_id' => Unit::factory(), // Automatically create a related Unit
+            'tenant_id' => Tenants::factory(), // Automatically create a related Tenant
             'start_date' => $startDate->format('Y-m-d'),
             'end_date' => $endDate->format('Y-m-d'),
             'rent_amount' => $this->faker->randomFloat(2, 800, 5000),

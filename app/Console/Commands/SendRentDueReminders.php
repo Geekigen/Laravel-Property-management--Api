@@ -36,6 +36,6 @@ class SendRentDueReminders extends Command
             $count++;
         }
 
-        $this->info("$count rent due reminders dispatched.");
+        $this->info("rent due reminders dispatched.");
     }
 }

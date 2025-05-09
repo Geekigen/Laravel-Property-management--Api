@@ -4,6 +4,10 @@ use App\Models\User;
 use Database\Seeders\PaymentsSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Queue;
+use App\Jobs\SendPaymentReceipt;
+use App\Models\Payments;
 
 uses(RefreshDatabase::class);
 
@@ -192,3 +196,17 @@ test('authenticated payments update validation for not found', function () {
     ]);
     $response->assertStatus(404);
 });
+
+// Test that the job logs the correct message
+test('send payment receipt job logs message', function () {
+    Log::spy();
+
+    $payment = Payments::factory()->create();
+
+    $job = new SendPaymentReceipt($payment);
+    $job->handle();
+
+    Log::shouldHaveReceived('info')->with("Payment receipt sent for Payment ID: {$payment->id}");
+});
+
+
