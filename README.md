@@ -19,8 +19,8 @@ This API enables complete CRUD operations with role-based access control, perfor
 
 ```bash
 # Clone the repository
-git clone https://github.com/yourusername/your-repository.git
-cd your-repository
+git clone git@github.com:Geekigen/Laravel-Property-management--Api.git
+cd Laravel-Property-management
 
 # Install dependencies
 composer install
@@ -31,7 +31,13 @@ cp .env.example .env
 php artisan key:generate
 
 # Database configuration
-# Edit .env with your database credentials
+#DB_CONNECTION=mysql
+# DB_HOST=127.0.0.1
+# DB_PORT=3306
+# DB_DATABASE=laravel
+# DB_USERNAME=root
+# DB_PASSWORD=
+
 
 # Run migrations with seed data
 php artisan migrate
