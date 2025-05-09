@@ -25,7 +25,7 @@ class UnitSeeder extends Seeder
         // Create a specific property with 3 specific units
         $specificLandlord = User::factory()->landlord()->create([
             'name' => 'Elite Landlord',
-            'email' => 'elite.landlord@example.com',
+            'email' => 'elite.landlord22@example.com',
         ]);
         $specificProperty = Property::factory()->create([
             'user_id' => $specificLandlord->id,
@@ -41,7 +41,7 @@ class UnitSeeder extends Seeder
             'square_footage' => 1200.00,
             'rent_amount' => 2000.00,
             'features' => ['balcony', 'in-unit laundry', 'pet-friendly'],
-            'status' => 'available',
+            'status' => 'vacant',
         ]);
         Unit::factory()->create([
             'property_id' => $specificProperty->id,

@@ -15,9 +15,9 @@ class TenantsSeeder extends Seeder
         // Create a specific tenant
         Tenants::factory()->create([
             'name' => 'John Doe',
-            'email' => 'john.doe@example.com',
+            'email' => 'john.doeee@example.com',
             'date_of_birth' => '1990-05-15',
-            'id_number' => 'ID-98765432',
+            'id_number' => 'ID-9687654332',
             'status' => 'active',
         ]);
 

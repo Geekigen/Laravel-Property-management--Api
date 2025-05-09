@@ -15,7 +15,7 @@ class LeaseSeeder extends Seeder
     {
         $activeTenants = Tenants::where('status', 'active')->take(15)->get();         $inactiveTenants = Tenants::where('status', 'inactive')->take(3)->get();
 
-        
+
         $activeLeasesData = [];
         foreach (range(0, min(9, $activeTenants->count() - 1)) as $index) {
             $landlord = User::factory()->landlord()->create();
@@ -33,7 +33,7 @@ class LeaseSeeder extends Seeder
 
         $specificLandlord = User::factory()->landlord()->create([
             'name' => 'Premier Landlord',
-            'email' => 'premier.landlord@example.com',
+            'email' => 'premier.landlord21@example.com',
         ]);
         $specificProperty = Property::factory()->create([
             'user_id' => $specificLandlord->id,

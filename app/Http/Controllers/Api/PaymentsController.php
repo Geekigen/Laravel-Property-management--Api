@@ -35,7 +35,7 @@ class PaymentsController extends Controller
             'due_date' => 'required|date',
             'payment_date' => 'nullable|date',
             'payment_method' => 'nullable|string',
-            'transaction_id' => 'nullable|string',
+            'transaction_id' => 'nul~lable|string',
             'status' => 'required|string',
             'notes' => 'nullable|string',
         ]);

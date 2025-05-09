@@ -20,7 +20,7 @@ class PaymentsSeeder extends Seeder
         $activeLeases = Lease::where('status', 'active')->take(10)->get();
         $activePaymentsData = [];
         foreach ($activeLeases as $lease) {
-            $paymentCount = rand(1, 3);
+            $paymentCount = rand(1, 11);
             for ($i = 0; $i < $paymentCount; $i++) {
                 $activePaymentsData[] = Payments::factory()->raw([
                     'lease_id' => $lease->id,
@@ -36,10 +36,10 @@ class PaymentsSeeder extends Seeder
         Payments::insert($activePaymentsData);
 
         $specificLandlord = User::firstOrCreate(
-            ['email' => 'prime.landlord@example.com'],
+            ['email' => 'prime.landlord212@example.com'],
             [
                 'name' => 'Prime Landlord',
-                'email' => 'prime.landlord@example.com',
+                'email' => 'prime.landlorded@example.com',
                 'password' => bcrypt('password'),
                 'role' => 'landlord',
             ]
@@ -57,7 +57,7 @@ class PaymentsSeeder extends Seeder
         ]);
         $specificTenant = Tenants::factory()->create([
             'name' => 'Bob Wilson',
-            'email' => 'bob.wilson@example.com',
+            'email' => 'bob.wilsone@example.com',
             'date_of_birth' => '1980-07-15',
             'id_number' => 'ID-98765432',
             'status' => 'active',

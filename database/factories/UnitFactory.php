@@ -35,7 +35,7 @@ class UnitFactory extends Factory
                 'gym access',
                 'pool',
             ], rand(2, 4)),
-            'status' => $this->faker->randomElement(['available', 'occupied', 'maintenance']),
+            'status' => $this->faker->randomElement(['vacant', 'occupied', 'maintenance', 'reserved']),
         ];
     }
 }
