@@ -1,6 +1,7 @@
 version: '3.8'
 
 services:
+  # Laravel Application
   app:
     build:
       context: .
@@ -8,34 +9,89 @@ services:
     image: property-management
     container_name: laravel-app
     restart: unless-stopped
-    volumes:
-      - .:/var/www
+    environment:
+      - APP_ENV=local
+      - APP_DEBUG=true
+      - APP_URL=http://localhost:8000
+      - LOG_CHANNEL=stderr
+      - CACHE_DRIVER=file
+      - SESSION_DRIVER=file
+      - QUEUE_CONNECTION=sync
+      - DB_CONNECTION=mysql
+      - DB_HOST=mysql
+      - DB_PORT=3307
+      - DB_DATABASE=${DB_DATABASE:-laravel}
+      - DB_USERNAME=${DB_USERNAME:-laraveluser}
+      - DB_PASSWORD=${DB_PASSWORD:-secret}
     ports:
-      - "8000:8000"
+      - 8000:8000
+    depends_on:
+      mysql:
+        condition: service_healthy
+    volumes:
+      - ./:/var/www:cached
+      - /var/www/vendor
+      - /var/www/node_modules
+    networks:
+      - laravel
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
+    command: >
+      bash -c "composer require laravel/framework:^12.0 laravel/sanctum:^4.0 laravel/telescope:^5.7 laravel/tinker:^2.10.1 --no-interaction &&
+      composer require --dev fakerphp/faker:^1.23 laravel/pail:^1.2.2 laravel/pint:^1.13 laravel/sail:^1.41 mockery/mockery:^1.6 nunomaduro/collision:^8.6 pestphp/pest:^3.8 --no-interaction &&
+      php artisan optimize:clear &&
+      php artisan serve --host=0.0.0.0 --port=8000"
+
+
+  # MySQL Database
+  mysql:
+    image: mysql:8.1
+    container_name: mysql
+    restart: unless-stopped
+    environment:
+      MYSQL_DATABASE: ${DB_DATABASE:-laravel}
+      MYSQL_USER: ${DB_USERNAME:-laraveluser}
+      MYSQL_PASSWORD: ${DB_PASSWORD:-secret}
+      MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD:-root}
+    volumes:
+      - dbdata:/var/lib/mysql
+      - ./docker/mysql:/etc/mysql/conf.d:ro
+    ports:
+      - "${DB_PORT:-3307}:3305"
+    networks:
+      - laravel
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-p${DB_ROOT_PASSWORD:-root}"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+      start_period: 30s
+
+  # phpMyAdmin for Database Management
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    container_name: phpmyadmin
+    restart: unless-stopped
+    environment:
+      PMA_HOST: mysql
+      PMA_PORT: 3307
+      PMA_USER: ${DB_USERNAME:-laraveluser}
+      PMA_PASSWORD: ${DB_PASSWORD:-secret}
+    ports:
+      - 8081:8081
     depends_on:
       - mysql
     networks:
       - laravel
 
-
-  mysql:
-    image: mysql:8.0
-    container_name: mysql
-    restart: unless-stopped
-    environment:
-      MYSQL_DATABASE: laravel
-      MYSQL_USER: laraveluser
-      MYSQL_PASSWORD: secret
-      MYSQL_ROOT_PASSWORD: root
-    volumes:
-      - dbdata:/var/lib/mysql
-    ports:
-      - "3306:3306"
-    networks:
-      - laravel
-
 volumes:
   dbdata:
+    driver: local
 
 networks:
   laravel:
+    driver: bridge

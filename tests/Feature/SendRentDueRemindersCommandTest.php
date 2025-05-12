@@ -1,5 +1,4 @@
 <?php
-use App\Jobs\SendRentDueReminder;
 use App\Models\Payments as Payment;
 use Illuminate\Support\Facades\Bus;
 use Illuminate\Support\Facades\Schema;
